@@ -30,6 +30,7 @@
     "node-osascript": "^2.0.0",
     "preferences": "^0.2.1",
     "simple-git": "^1.77.0",
+    "sqlite3": "^3.1.12",
     "touch": "^3.1.0"
   }
 }

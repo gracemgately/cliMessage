@@ -12,6 +12,7 @@ const fs = require('fs');
 //FILES
 const allContactsAndNumbers = require('./scripts/names');
 const utilities = require('./utils')
+const previousMessages = fs.readFileSync('./scripts/prevMessages.txt').toString('utf-8').split('\n')
 
 //OTHER IMPORTANT THINGS
 const contactBook = utilities.contactOrganizer(allContactsAndNumbers);
@@ -59,6 +60,12 @@ function selectContact(callback){
         })
     })
     .then(number => {
+        //fetch the previous messages between you and that number
+
+        const fetchMessages = require('./scripts/bashMessages');
+        console.log('fetchMessages result', fetchMessages(number));
+        console.log('previous messages between us:', previousMessages);
+
         //write the message you want to send to the contact's number
         const writeMessage = [
             {
