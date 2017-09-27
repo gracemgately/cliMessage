@@ -1,0 +1,35 @@
+{
+  "name": "guimessage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "fetch-contacts": "node ./scripts/bashContacts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gracemgately/guiMessage.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gracemgately/guiMessage/issues"
+  },
+  "homepage": "https://github.com/gracemgately/guiMessage#readme",
+  "dependencies": {
+    "applescript": "^1.0.0",
+    "chalk": "^2.1.0",
+    "clear": "0.0.1",
+    "clui": "^0.3.6",
+    "figlet": "^1.2.0",
+    "inquirer": "^3.3.0",
+    "lodash": "^4.17.4",
+    "minimist": "^1.2.0",
+    "node-osascript": "^2.0.0",
+    "preferences": "^0.2.1",
+    "simple-git": "^1.77.0",
+    "touch": "^3.1.0"
+  }
+}
