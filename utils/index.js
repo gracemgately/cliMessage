@@ -17,5 +17,19 @@ module.exports =
         }, 
         contactNames: function(allContacts){
             return Object.keys(allContacts)
+        },
+        messagesOrganizer: function(allMessagesFromDBQuery, sender){
+            var organizedArray = [];
+            allMessagesFromDBQuery.forEach(message => {
+                if (message[0] === '1') {
+                    let newMessage = 'me: ' + message.slice(1).trim();
+                    organizedArray.push(newMessage)
+                }
+                else if (message[0] === '0'){
+                    let newMessage = sender + ': ' + message.slice(1).trim();
+                    organizedArray.push(newMessage);
+                }
+            })
+            return organizedArray;
         }
     }

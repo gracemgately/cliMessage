@@ -56,15 +56,19 @@ function selectContact(callback){
         ]
         
         return inquirer.prompt(chooseNumber).then(answers => {
-            return (answers['which number?']);
+            return ([answers['which number?'], person]);
         })
     })
-    .then(number => {
+    .then(([number, person])=> {
         //fetch the previous messages between you and that number
-
-        const fetchMessages = require('./scripts/bashMessages');
-        console.log('fetchMessages result', fetchMessages(number));
-        console.log('previous messages between us:', previousMessages);
+        //TBD!!!!! NOT WORKING!!!
+        //const fetchMessages = require('./scripts/bashMessages');
+        //console.log('fetchMessages result', fetchMessages(number));
+        const lastFiveMessages = utilities.messagesOrganizer(previousMessages, person).slice(-5);
+        lastFiveMessages.forEach(message => {
+            if (message.slice(0,2) === 'me') console.log(chalk.yellow.bold(message));
+            else console.log(chalk.green.bold(message));
+        })
 
         //write the message you want to send to the contact's number
         const writeMessage = [
