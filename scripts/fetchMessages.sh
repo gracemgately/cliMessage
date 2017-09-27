@@ -21,5 +21,6 @@ select handle_id from chat_handle_join where chat_id=(
 select ROWID from chat where guid='iMessage;-;$1')
 )" | sed 's/1\|/me: /g;s/0\|/budy: /g' > scripts/prevMessages.txt
 
+
 #echo $(cat scripts/prevMessages.txt) --> for testing
 

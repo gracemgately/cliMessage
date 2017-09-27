@@ -12,10 +12,11 @@ const fs = require('fs');
 //FILES
 const allContactsAndNumbers = require('./scripts/names');
 const utilities = require('./utils')
-const previousMessages = fs.readFileSync('./scripts/prevMessages.txt').toString('utf-8').split('\n')
+const getPreviousMessages = require('./scripts/bashMessages')
 
 //OTHER IMPORTANT THINGS
 const contactBook = utilities.contactOrganizer(allContactsAndNumbers);
+const previousMessages = fs.readFileSync('./scripts/prevMessages.txt').toString('utf-8').split('\n')
 
 //clear terminal at the start
 clear();
@@ -61,10 +62,13 @@ function selectContact(callback){
     })
     .then(([number, person])=> {
         //fetch the previous messages between you and that number
-        //TBD!!!!! NOT WORKING!!!
-        //const fetchMessages = require('./scripts/bashMessages');
-        //console.log('fetchMessages result', fetchMessages(number));
+        //TBD!!!!! NOT WORKING!!!ASYNCHRONOUS NOONONNOO
+        getPreviousMessages(number); 
+        return [number, person];
+    })
+    .then(([number, person]) => {
         const lastFiveMessages = utilities.messagesOrganizer(previousMessages, person).slice(-5);
+        
         lastFiveMessages.forEach(message => {
             if (message.slice(0,2) === 'me') console.log(chalk.yellow.bold(message));
             else console.log(chalk.green.bold(message));
