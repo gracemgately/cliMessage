@@ -21,6 +21,15 @@ select handle_id from chat_handle_join where chat_id=(
 select ROWID from chat where guid='iMessage;-;$1')
 )" | sed 's/1\|/me: /g;s/0\|/budy: /g' > scripts/prevMessages.txt
 
-
 #echo $(cat scripts/prevMessages.txt) --> for testing
 
+sqlite3 ~/Library/Messages/chat.db "
+select filename from attachment where rowid in (
+select attachment_id from message_attachment_join where message_id in (
+select rowid from message where cache_has_attachments=1 and handle_id=(
+select handle_id from chat_handle_join where chat_id=(
+select ROWID from chat where guid='iMessage;-;$1')
+)))" 
+
+#not printing anything for the above, just to prevent cliMessage from 
+#throwing errors when encountering attachments or images

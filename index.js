@@ -7,16 +7,17 @@ const inquirer = require('inquirer'); //interactive CLI
 const Preferences = require('preferences'); //encrypted prefs
 const git = require('simple-git')(); //git commands in node
 const touch = require('touch');
-const fs = require('fs');
+const Promise = require('bluebird');
+const fs = Promise.promisifyAll(require('fs'));
 
 //FILES
 const allContactsAndNumbers = require('./scripts/names');
 const utilities = require('./utils')
 const getPreviousMessages = require('./scripts/bashMessages')
+const sendMessage = require('./scripts/sendMessage')
 
 //OTHER IMPORTANT THINGS
 const contactBook = utilities.contactOrganizer(allContactsAndNumbers);
-const previousMessages = fs.readFileSync('./scripts/prevMessages.txt').toString('utf-8').split('\n')
 
 //clear terminal at the start
 clear();
@@ -60,21 +61,32 @@ function selectContact(callback){
             return ([answers['which number?'], person]);
         })
     })
-    .then(([number, person])=> {
-        //fetch the previous messages between you and that number
+    .then(([phoneNumber, person])=> {
+        //fetch the previous messages between you and that phoneNumber
+        //from the sqlite database in user library
         //TBD!!!!! NOT WORKING!!!ASYNCHRONOUS NOONONNOO
-        getPreviousMessages(number); 
-        return [number, person];
+        getPreviousMessages(phoneNumber); 
+        return [phoneNumber, person];
     })
-    .then(([number, person]) => {
-        const lastFiveMessages = utilities.messagesOrganizer(previousMessages, person).slice(-5);
-        
+    .then(([phoneNumber, person]) => {
+        return fs.readFileAsync('./scripts/prevMessages.txt', 'utf8', (err, data) =>{
+            if (err) throw err;
+            else return data
+        })
+        .then(data => {
+            return [phoneNumber, person, data]
+        });
+    })
+    .then(([phoneNumber, person, data]) => {
+        data = data.split('\n')
+        //display the previous five messages between you and sender
+        const lastFiveMessages = utilities.messagesOrganizer(data, person).slice(-5);
         lastFiveMessages.forEach(message => {
             if (message.slice(0,2) === 'me') console.log(chalk.yellow.bold(message));
             else console.log(chalk.green.bold(message));
         })
 
-        //write the message you want to send to the contact's number
+        //write the message you want to send to the contact's phoneNumber
         const writeMessage = [
             {
                 name: 'write a message',
@@ -84,13 +96,14 @@ function selectContact(callback){
         ]
 
         return inquirer.prompt(writeMessage).then(answers => {
-            return([number, answers['write a message']]);
+            return([phoneNumber, answers['write a message']]);
         })
     })
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
-        require('./scripts/sendMessage')(phoneNumber, messageToSend)
+        sendMessage(phoneNumber, messageToSend)
     })
+    .catch(error => console.error(error))
 
 };
 
