@@ -57,9 +57,12 @@ function selectContact(callback){
             }
         ]
         
-        return inquirer.prompt(chooseNumber).then(answers => {
+        return inquirer.prompt(chooseNumber)
+        .then(answers => {
             return ([answers['which number?'], person]);
         })
+        .catch(err => console.log(new Error.stack));
+
     })
     .then(([phoneNumber, person])=> {
         //fetch the previous messages between you and that phoneNumber
@@ -69,13 +72,16 @@ function selectContact(callback){
         return [phoneNumber, person];
     })
     .then(([phoneNumber, person]) => {
+        
         return fs.readFileAsync('./scripts/prevMessages.txt', 'utf8', (err, data) =>{
             if (err) throw err;
             else return data
         })
         .then(data => {
             return [phoneNumber, person, data]
-        });
+        })
+        .catch(err => console.error(new Error.stack));
+
     })
     .then(([phoneNumber, person, data]) => {
         data = data.split('\n')
@@ -95,15 +101,18 @@ function selectContact(callback){
             }
         ]
 
-        return inquirer.prompt(writeMessage).then(answers => {
+        return inquirer.prompt(writeMessage)
+        .then(answers => {
             return([phoneNumber, answers['write a message']]);
         })
+        .catch(err => console.log(new Error.stack));
+
     })
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
         sendMessage(phoneNumber, messageToSend)
     })
-    .catch(error => console.error(error))
+    .catch(error => console.log(new Error.stack))
 
 };
 
