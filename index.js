@@ -67,11 +67,14 @@ function selectContact(callback){
     .then(([phoneNumber, person])=> {
         //fetch the previous messages between you and that phoneNumber
         //from the sqlite database in user library
-        //TBD!!!!! NOT WORKING!!!ASYNCHRONOUS NOONONNOO
-        getPreviousMessages(phoneNumber); 
-        return [phoneNumber, person];
+        return getPreviousMessages(phoneNumber)
+        .then((result) => {
+            //result is the resolve(stdout)
+            console.log('result:', result);
+            return [phoneNumber, person];
+        })
     })
-    .then(([phoneNumber, person]) => {
+    .then(([phoneNumber, person]) => { 
         
         return fs.readFileAsync('./scripts/prevMessages.txt', 'utf8', (err, data) =>{
             if (err) throw err;
