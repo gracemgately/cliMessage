@@ -20,6 +20,7 @@
   "homepage": "https://github.com/gracemgately/guiMessage#readme",
   "dependencies": {
     "applescript": "^1.0.0",
+    "blessed": "^0.1.81",
     "chalk": "^2.1.0",
     "clear": "0.0.1",
     "clui": "^0.3.6",
@@ -30,7 +31,7 @@
     "node-osascript": "^2.0.0",
     "preferences": "^0.2.1",
     "simple-git": "^1.77.0",
-    "sqlite3": "^3.1.12",
+    "sqlite3": "^3.1.8",
     "touch": "^3.1.0"
   }
 }

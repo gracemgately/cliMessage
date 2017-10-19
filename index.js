@@ -113,7 +113,8 @@ function selectContact(callback){
     })
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
-        sendMessage(phoneNumber, messageToSend)
+        sendMessage(phoneNumber, messageToSend);
+        //TODO: import blessed lib/file and render box with message sent
     })
     .catch(error => console.log(new Error.stack))
 
