@@ -12,11 +12,12 @@ const fs = Promise.promisifyAll(require('fs'));
 
 //FILES
 const allContactsAndNumbers = require('./scripts/names');
-const utilities = require('./utils')
-const getPreviousMessages = require('./scripts/bashMessages')
-const sendMessage = require('./scripts/sendMessage')
+const utilities = require('./utils');
+const getPreviousMessages = require('./scripts/bashMessages');
+const sendMessage = require('./scripts/sendMessage');
+const messageBox = require('./blessed.js');
 
-//OTHER IMPORTANT THINGS
+//UTIL FUNCTIONS & OTHER IMPORTANT THINGS
 const contactBook = utilities.contactOrganizer(allContactsAndNumbers);
 
 //clear terminal at the start
@@ -61,7 +62,6 @@ function selectContact(callback){
         .then(answers => {
             return ([answers['which number?'], person]);
         })
-        .catch(err => console.log(new Error.stack));
 
     })
     .then(([phoneNumber, person])=> {
@@ -70,29 +70,25 @@ function selectContact(callback){
         return getPreviousMessages(phoneNumber)
         .then((result) => {
             //result is the resolve(stdout)
-            console.log('result:', result);
             return [phoneNumber, person];
         })
+
     })
     .then(([phoneNumber, person]) => { 
         
-        return fs.readFileAsync('./scripts/prevMessages.txt', 'utf8', (err, data) =>{
-            if (err) throw err;
-            else return data
+        return fs.readFileAsync('./scripts/prevMessages.txt', 'utf8')
+        .then(messageData => {
+            return [phoneNumber, person, messageData]
         })
-        .then(data => {
-            return [phoneNumber, person, data]
-        })
-        .catch(err => console.error(new Error.stack));
 
     })
-    .then(([phoneNumber, person, data]) => {
-        data = data.split('\n')
+    .then(([phoneNumber, person, messageData]) => {
+        messageData = messageData.split('\n')
         //display the previous five messages between you and sender
-        const lastFiveMessages = utilities.messagesOrganizer(data, person).slice(-5);
-        lastFiveMessages.forEach(message => {
-            if (message.slice(0,2) === 'me') console.log(chalk.yellow.bold(message));
-            else console.log(chalk.green.bold(message));
+        const lastFiveMessages = utilities.messagesOrganizer(messageData, person).slice(-5);
+        lastFiveMessages.forEach(messageData => {
+            if (messageData.slice(0,2) === 'me') console.log(chalk.yellow.bold(messageData));
+            else console.log(chalk.green.bold(messageData));
         })
 
         //write the message you want to send to the contact's phoneNumber
@@ -114,13 +110,21 @@ function selectContact(callback){
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
         sendMessage(phoneNumber, messageToSend);
-        //TODO: import blessed lib/file and render box with message sent
+        //messageBox(message, 'sender')
+        //render blessed box with message sent
+        
     })
     .catch(error => console.log(new Error.stack))
 
 };
 
+process.on('unhandledRejection', (reason, p) => {
+    console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+    // application specific logging, throwing an error, or other logic here
+});
+
 selectContact(() => {
   console.log('args', arguments);
 });
+
 

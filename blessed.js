@@ -1,53 +1,63 @@
 //LIBRARIES
 const blessed = require('blessed');
 
-//create screen object with CSR (change-scroll-region)
-var screen = blessed.screen({
-    smartCSR: true
-});
+//UTILS
+const { colorGenerator } = require('./utils')
 
-//title
-screen.title = 'cliMessage testing';
 
-//TODO:
-//write a function that renders box with message:
-//if user sends message: white with black text
-//recipient message in black with white text
+const createMessageBox = (message, senderOrRecipient) => {
+    //create screen object with CSR (change-scroll-region)
+    const screen = blessed.screen({
+        smartCSR: true
+    });
 
-//figure out how to make box size correspond to 
-//length of message
+    //title
+    screen.title = 'cliMessage testing';
 
-//create box
-var box = blessed.box({
-    top: 'top',
-    left: 'left',
-    width: '25%',
-    height: '25%',
-    content: 'message here',
-    tags: true,
-    border: {
-        type: 'line'
-    },
-    style: {
-        fg: 'black',
-        bg: 'white',
+    //TODO:
+    //figure out how to make box size correspond to 
+    //length of message
+
+    //create box
+    const box = blessed.box({
+        top: 'top',
+        left: 'left',
+        width: '25%',
+        height: '25%',
+        content: message,
+        tags: true,
         border: {
-            fg: '#f0f0f0'
+            type: 'line'
         },
-    }
-});
+        style: {
+            fg: colorGenerator('text', senderOrRecipient),
+            bg: colorGenerator('box', senderOrRecipient),
+            border: {
+                fg: '#f0f0f0'
+            },
+        }
+    });
 
 
-// Append our box to the screen.
-screen.append(box);
+    // Append our box to the screen.
+    screen.append(box);
 
-// Quit on Escape, q, or Control-C.
-screen.key(['escape', 'q', 'C-c'], function (ch, key) {
-    return process.exit(0);
-});
+    // Quit on Escape, q, or Control-C.
+    screen.key(['escape', 'q', 'C-c'], function (ch, key) {
+        return process.exit(0);
+    });
 
-// Focus our element.
-box.focus();
+    // Focus our element.
+    box.focus();
 
-// Render the screen.
-screen.render();
+    // Render the screen.
+    screen.render();
+};
+
+module.exports = createMessageBox;
+
+
+
+
+
+

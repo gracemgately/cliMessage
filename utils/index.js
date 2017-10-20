@@ -31,5 +31,18 @@ module.exports =
                 }
             })
             return organizedArray;
+        }, 
+        colorGenerator: function (textOrBox, clientType){
+            if (textOrBox === 'text'){
+                if (clientType === 'sender') return 'black';
+                else if (clientType === 'receiver') return 'white';
+                else throw new Error('neither sender nor receiver').stack;
+            }
+            else if (textOrBox === 'box'){
+                if (clientType === 'sender') return 'white';
+                else if (clientType === 'receiver') return 'black';
+                else throw new Error('neither sender nor receiver').stack;
+            }
+            else throw new Error('error in colorGenerator function')
         }
-    }
+    };
