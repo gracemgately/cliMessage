@@ -4,9 +4,6 @@ const CLI = require('clui'); // CLI tables/spinners
 const Spinner = CLI.Spinner;
 const figlet = require('figlet'); //ASCII text/art
 const inquirer = require('inquirer'); //interactive CLI
-const Preferences = require('preferences'); //encrypted prefs
-const git = require('simple-git')(); //git commands in node
-const touch = require('touch');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 
@@ -104,24 +101,18 @@ function selectContact(callback){
         .then(answers => {
             return([phoneNumber, answers['write a message']]);
         })
-        .catch(err => console.log(new Error.stack));
 
     })
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
         sendMessage(phoneNumber, messageToSend);
-        //messageBox(message, 'sender')
+        messageBox(messageToSend, 'sender')
         //render blessed box with message sent
         
     })
-    .catch(error => console.log(new Error.stack))
+    .catch(error => console.log(error.stack))
 
 };
-
-process.on('unhandledRejection', (reason, p) => {
-    console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason);
-    // application specific logging, throwing an error, or other logic here
-});
 
 selectContact(() => {
   console.log('args', arguments);
