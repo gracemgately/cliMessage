@@ -54,7 +54,24 @@ const createMessageBox = (message, senderOrRecipient) => {
     screen.render();
 };
 
-module.exports = createMessageBox;
+//process command-line arguments
+const getArgs = (textObj) => {
+    process.argv.forEach((val, index) => {
+        if (index === 2) textObj.message = val;
+        else if (index === 3) textObj.senderOrRecipient = val;
+    });
+};
+
+//pass the command-line arguments to the messageBox function
+const getCmdLineArgsAndCreateBox = () => {
+    let textObj = {};
+    getArgs(textObj);
+    createMessageBox(textObj.message, textObj.senderOrRecipient);
+};
+
+getCmdLineArgsAndCreateBox();
+
+
 
 
 

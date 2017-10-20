@@ -12,7 +12,8 @@ const allContactsAndNumbers = require('./scripts/names');
 const utilities = require('./utils');
 const getPreviousMessages = require('./scripts/bashMessages');
 const sendMessage = require('./scripts/sendMessage');
-const messageBox = require('./blessed.js');
+//const messageBox = require('./blessed.js');
+const newTerminalTab = require('./scripts/newTerminalTab');
 
 //UTIL FUNCTIONS & OTHER IMPORTANT THINGS
 const contactBook = utilities.contactOrganizer(allContactsAndNumbers);
@@ -40,7 +41,7 @@ function selectContact(callback){
 
     inquirer.prompt(choosePerson).then(answers => {
         //the person you're sending the message to
-        return answers['send to'];
+        return answers['send to']
     })
     .then(person => {
         //the options for the number you'll choose 
@@ -57,7 +58,7 @@ function selectContact(callback){
         
         return inquirer.prompt(chooseNumber)
         .then(answers => {
-            return ([answers['which number?'], person]);
+            return ([answers['which number?'], person])
         })
 
     })
@@ -67,7 +68,7 @@ function selectContact(callback){
         return getPreviousMessages(phoneNumber)
         .then((result) => {
             //result is the resolve(stdout)
-            return [phoneNumber, person];
+            return [phoneNumber, person]
         })
 
     })
@@ -99,15 +100,16 @@ function selectContact(callback){
 
         return inquirer.prompt(writeMessage)
         .then(answers => {
-            return([phoneNumber, answers['write a message']]);
+            return([phoneNumber, answers['write a message']])
         })
 
     })
     .then(([phoneNumber, messageToSend]) => {
         //send the message to the contact
         sendMessage(phoneNumber, messageToSend);
-        messageBox(messageToSend, 'sender')
-        //render blessed box with message sent
+        //TODO: open a new tab to render blessed box with message sent
+        //messageBox(messageToSend, 'sender');
+        newTerminalTab(`node blessed.js '${messageToSend}' 'sender'`);
         
     })
     .catch(error => console.log(error.stack))
